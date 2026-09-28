@@ -340,6 +340,22 @@ run_test("initiate_search", ({override_rewire}) => {
     assert.equal($("#search_query").text(), "");
 });
 
+run_test("expanded search bar keeps the container out of the tab order", () => {
+    // Collapsed, the container is the tab stop, so that Tab reaches the
+    // search bar without expanding it.
+    $("#searchbox-input-container").attr("tabindex", "0");
+
+    search.open_search_bar_and_close_narrow_description(true);
+
+    assert.equal($("#search_query").attr("contenteditable"), "true");
+    assert.equal($("#searchbox-input-container").attr("tabindex"), undefined);
+
+    search.close_search_bar_and_open_narrow_description();
+
+    assert.equal($("#search_query").attr("contenteditable"), "false");
+    assert.equal($("#searchbox-input-container").attr("tabindex"), "0");
+});
+
 run_test("close_search", () => {
     search_typeahead.shown = true;
     $(".navbar-search").addClass("expanded");

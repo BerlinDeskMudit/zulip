@@ -443,6 +443,11 @@ export function rewire_exit_search(value: typeof exit_search): void {
 export let open_search_bar_and_close_narrow_description = (clear = false): void => {
     reset_searchbox(clear);
     $("#search_query").attr("contenteditable", "true");
+    // #search_query only enters the tab order once it is contenteditable.
+    // Leaving tabindex="0" on the container keeps the search landmark as a
+    // competing tab stop, and screen readers anchor their virtual cursor
+    // there instead of descending into the input we just focused.
+    $("#searchbox-input-container").removeAttr("tabindex");
     $(".navbar-search").addClass("expanded");
     $("#message_view_header").addClass("hidden");
     popovers.hide_all();
@@ -473,6 +478,7 @@ export function close_search_bar_and_open_narrow_description(): void {
     }
 
     $("#search_query").attr("contenteditable", "false");
+    $("#searchbox-input-container").attr("tabindex", "0");
     $(".navbar-search").removeClass("expanded");
     $("#message_view_header").removeClass("hidden");
 
